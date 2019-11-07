@@ -1,7 +1,3 @@
-//
-// Created by Vladimir Smirnov on 06.11.2019.
-//
-
 #include "Interpolation.h"
 #include "../Grid/Grid.h"
 #include <cmath>
