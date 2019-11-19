@@ -17,6 +17,8 @@ Particles::Particles(const type_double m, const type_double q, const size_t N, c
     efr.resize(N, 0);
     Ntot = N;
     grid = init_grid;
+    node_volume.resize(init_grid.Nz, init_grid.Nr);
+    init_node_volume(node_volume);
     rho.resize(init_grid.Nz, init_grid.Nr);
 }
 
@@ -68,13 +70,33 @@ void Particles::pusher(const type_double dt) {
     //UpdatePosition(pos_z, pos_r, vel_z, vel_r, vel_y, dt, Ntot, grid.dr);
 }
 
+void Particles::init_node_volume(Matrix node_volume) {
+    int j_min, j_max;
+    float a;
+    for (int i = 0; i < grid.Nz; i++) {
+        for (int j = 0; j < grid.Nr; j++) {
+            j_min = j - 0.5;
+            j_max = j + 0.5;
+            if (j_min < 0)
+                j_min = 0;
+            if (j_max > grid.Nr - 1)
+                j_max = grid.Nr - 1;
+            if (i == 0 or i == grid.Nz - 1)
+                a = 0.5;
+            else
+                a = 1;
+            node_volume(i, j) = a*grid.dz*((j_max*grid.dr)*(j_max*grid.dr) - (j_min*grid.dr)*(j_min*grid.dr))*M_PI;
+        }
+    }
+}
+
 void Particles::electric_field_interpolation(Matrix& Ez, Matrix& Er) {
     LinearFieldInterpolation(efz.data(), efr.data(), z.data(), r.data(), Ez.data_ptr(), Er.data_ptr(),
                              grid, Ntot);
 }
 
 void Particles::charge_interpolation() {
-    LinearChargeInterpolation(rho.data_ptr(), z.data(), r.data(), grid, charge, Ntot);
+    LinearChargeInterpolation(rho.data_ptr(), z.data(), r.data(), grid, charge, Ntot, node_volume.data_ptr());
 }
 
 void Particles::set_const_magnetic_field(const vector<type_double>& Bz, const vector<type_double>& Br) {

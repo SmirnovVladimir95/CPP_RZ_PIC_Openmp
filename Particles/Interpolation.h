@@ -12,7 +12,7 @@ void LinearFieldInterpolation(type_double efz[], type_double efr[], const type_d
                               const type_double Ez[], const type_double Er[], const Grid& grid, const size_t Ntot);
 
 void LinearChargeInterpolation(type_double rho[], const type_double z[], const type_double r[], const Grid& grid,
-                               type_double charge, const size_t Ntot);
+                               type_double charge, const size_t Ntot, const type_double node_volume[]);
 
 
 #endif //CPP_RZ_PIC_INTERPOLATION_H

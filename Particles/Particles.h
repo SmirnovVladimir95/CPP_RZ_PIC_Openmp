@@ -14,7 +14,7 @@ typedef double type_double; // c++0x
 class Particles {
 private:
     Grid grid;
-    void node_volume();
+    void init_node_volume(Matrix node_volume);
 public:
     size_t Ntot;
     type_double mass;
@@ -29,6 +29,7 @@ public:
     vector<type_double> mfz;
     vector<type_double> mfr;
     Matrix rho;
+    Matrix node_volume;
     Particles(const type_double m, const type_double q, const size_t N, const Grid& grid);
     void generate_velocities(const type_double energy, const int seed=time(nullptr));
     void generate_positions(const array<type_double, 2>& z_bounds, const array<type_double, 2>& r_bounds, const int seed=time(nullptr));
